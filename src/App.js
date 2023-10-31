@@ -1,12 +1,17 @@
 
 import './App.css';
-import Hello from './components/Hello';
-import data from './data';
+// import Hello from './components/Hello';
+// import data from './data';
+import Final from './useState/basics1';
 
 // console.log(data);
 
 function App() {
-   return <Hello/>
+   return (
+   <div>
+    <Final />
+   </div>
+   );
   //(
   //   <main className='container'>
   //     <ul className='comments-container'>
