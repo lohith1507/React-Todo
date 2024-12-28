@@ -1,5 +1,5 @@
 import './App.css';
-import Index from './useState/Example-3';
+import Index from './comp/index';
 
 
 
