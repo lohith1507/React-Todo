@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../index.css";
 import {
   Button,
@@ -10,26 +10,36 @@ import {
   Modal,
   Form,
 } from "react-bootstrap";
+import { GlobalContext } from "../App";
+
 export default function Index() {
-  const [todos, setTodos] = useState([]);
+  const { todos, setTodos, fetchTodos, deleteTodo, addTodo, editTodo } =
+    useContext(GlobalContext);
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({
     task: "",
     msg: "",
     status: "Not Started",
   });
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editId, setEditId] = useState(null);
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const fetchTodos = async () => {
-    const res = await fetch("http://localhost:5000/items");
-    if (!res.ok) {
-      throw new Error("Data not Fetched");
+  const handleShow = (item = null) => {
+    if (item) {
+      setFormData(item);
+      setIsEditMode(true);
+      setEditId(item.id);
+    } else {
+      setFormData({
+        task: "",
+        msg: "",
+        status: "Not Started",
+      });
+      setIsEditMode(false);
+      setEditId(null);
     }
-    const data = await res.json();
-    setTodos(data);
-    console.log(data);
+    setShow(true);
   };
 
   useEffect(() => {
@@ -43,29 +53,35 @@ export default function Index() {
   const handleSave = async (e) => {
     e.preventDefault();
     const newTask = {
-        id : todos.length > 0 ? todos[todos.length-1].id + 1 : 1,
-        ...formData 
-    }
-    try{
-        const res = await fetch("http://localhost:5000/items", {
-            method: "POST",
-            headers: {
-                "Content-Type" : "application/json",
-            },
-            body: JSON.stringify(newTask), 
-        });
-        if(res.ok){
-            const savedTask = await res.json();
-            setTodos([...todos, savedTask]);
-        }
-    }
-    catch(err){
-        console.log("Failed to Save new Task: ", err)
+      id: todos.length > 0 ? todos[todos.length - 1].id + 1 : 1,
+      ...formData,
+    };
+    try {
+      const res = await addTodo(newTask);
+      if (res.ok) {
+        const savedTask = await res.json();
+        setTodos([...todos, savedTask]);
+      }
+    } catch (err) {
+      console.log("Failed to Save new Task: ", err);
     }
     fetchTodos();
     handleClose();
-    setFormData({task:"",msg:"",status:"Not Started"});
-};
+    setFormData({ task: "", msg: "", status: "Not Started" });
+  };
+
+  const handleEdit = (id) => {};
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteTodo(id);
+      setTodos((prev) => prev.filter((item) => item.id !== id));
+      console.log("Deleted Todo with id : ", id);
+    } catch (err) {
+      alert(`Failed to delete Todo with id - ${id}`);
+    }
+    fetchTodos();
+  };
 
   return (
     <>
@@ -82,13 +98,14 @@ export default function Index() {
             </Button>
           </CardHeader>
           <CardBody>
-            <Table striped hover>
+            <Table striped hover className="text-center">
               <thead>
                 <tr>
                   <th>S.No</th>
                   <th>Task</th>
                   <th>Description</th>
                   <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -98,6 +115,21 @@ export default function Index() {
                     <td>{item.task}</td>
                     <td>{item.msg}</td>
                     <td>{item.status}</td>
+                    <td>
+                      <Button
+                        onClick={handleEdit(item)}
+                        variant="info"
+                        className="me-2"
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        onClick={() => handleDelete(item.id)}
+                        variant="danger"
+                      >
+                        Delete
+                      </Button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
