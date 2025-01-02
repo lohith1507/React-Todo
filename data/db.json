@@ -4,7 +4,7 @@
       "id": 1,
       "task": "Task1",
       "msg": "Task1 Message",
-      "status": "Completed"
+      "status": "completed"
     },
     {
       "id": 2,
@@ -25,10 +25,22 @@
       "status": "pending"
     },
     {
-      "id": 5,
       "task": "Task5",
       "msg": "Task5 Message",
-      "status": "completed"
+      "status": "pending",
+      "id": 5
+    },
+    {
+      "id": 6,
+      "task": "Task6",
+      "msg": "Task6 Message",
+      "status": "Not Started"
+    },
+    {
+      "id": 7,
+      "task": "Task7",
+      "msg": "Task7 Message",
+      "status": "pending"
     }
   ]
 }

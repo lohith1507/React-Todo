@@ -25,6 +25,7 @@ export default function Index() {
 
   const handleClose = () => setShow(false);
   const handleAdd = () => {
+    setEditId(null)
     setShow(true);
   };
   const handleEdit = (item) => {
