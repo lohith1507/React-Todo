@@ -22,13 +22,13 @@
       "id": 4,
       "task": "Task4",
       "msg": "Task4 Message",
-      "status": "Pending"
+      "status": "pending"
     },
     {
       "id": 5,
       "task": "Task5",
       "msg": "Task5 Message",
-      "status": "Not Started"
+      "status": "completed"
     }
   ]
 }

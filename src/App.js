@@ -14,7 +14,7 @@ function App() {
     }
     const data = await res.json();
     setTodos(data);
-    console.log(data);
+    // console.log(data);
   };
 
   const addTodo = async (newItem) => {

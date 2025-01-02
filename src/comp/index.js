@@ -13,7 +13,7 @@ import {
 import { GlobalContext } from "../App";
 
 export default function Index() {
-  const { todos, setTodos, fetchTodos, deleteTodo, addTodo, editTodo } =
+  const { todos, setTodos, fetchTodos, deleteTodo, addTodo , editTodo} =
     useContext(GlobalContext);
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,30 +21,21 @@ export default function Index() {
     msg: "",
     status: "Not Started",
   });
-  const [isEditMode, setIsEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
 
   const handleClose = () => setShow(false);
-  const handleShow = (item = null) => {
-    if (item) {
-      setFormData(item);
-      setIsEditMode(true);
-      setEditId(item.id);
-    } else {
-      setFormData({
-        task: "",
-        msg: "",
-        status: "Not Started",
-      });
-      setIsEditMode(false);
-      setEditId(null);
-    }
+  const handleAdd = () => {
     setShow(true);
+  };
+  const handleEdit = (item) => {
+      setFormData(item);
+      setEditId(item.id)
+      setShow(true);
   };
 
   useEffect(() => {
     fetchTodos();
-  }, []);
+  }, [fetchTodos]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -52,25 +43,33 @@ export default function Index() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    const newTask = {
-      id: todos.length > 0 ? todos[todos.length - 1].id + 1 : 1,
-      ...formData,
-    };
-    try {
-      const res = await addTodo(newTask);
-      if (res.ok) {
-        const savedTask = await res.json();
-        setTodos([...todos, savedTask]);
+      if(!editId){
+        const newTask = {
+          id: todos.length > 0 ? todos[todos.length - 1].id + 1 : 1,
+          ...formData,
+        };
+        try {
+          const res = await addTodo(newTask);
+          if (res.ok) {
+            console.log(newTask);
+          }
+        } catch (err) {
+          console.log("Failed to Save new Task: ", err);
+        }
       }
-    } catch (err) {
-      console.log("Failed to Save new Task: ", err);
+    else {
+      try {
+        const res = await editTodo(editId, formData);
+        if (res.ok){     
+          alert("Task Updated!");
+        }
+      } catch (err) {
+        console.log("Failed to update Task: ", err);
+      }
     }
-    fetchTodos();
     handleClose();
     setFormData({ task: "", msg: "", status: "Not Started" });
   };
-
-  const handleEdit = (id) => {};
 
   const handleDelete = async (id) => {
     try {
@@ -93,7 +92,7 @@ export default function Index() {
         <Card style={{ width: "50rem" }}>
           <CardHeader>
             <CardTitle>ToDo Items</CardTitle>
-            <Button className="float-end" onClick={handleShow}>
+            <Button className="float-end" onClick={handleAdd}>
               Add task
             </Button>
           </CardHeader>
@@ -117,7 +116,7 @@ export default function Index() {
                     <td>{item.status}</td>
                     <td>
                       <Button
-                        onClick={handleEdit(item)}
+                        onClick={() => handleEdit(item)}
                         variant="info"
                         className="me-2"
                       >
@@ -140,7 +139,7 @@ export default function Index() {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Add New Task</Modal.Title>
+          <Modal.Title>{editId ? "Edit Task" : "Add New Task"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSave}>
@@ -165,6 +164,18 @@ export default function Index() {
                 name="msg"
               />
             </Form.Group>
+
+            {
+              editId ? <Form.Group className="mb-3">
+              <Form.Label>Status</Form.Label>
+              <Form.Select onChange={handleChange} value={formData.status} name="status">
+                <option value="not started">Not Started</option>
+                <option value="pending">Pending</option>
+                <option value="completed">Completed</option>
+              </Form.Select>
+            </Form.Group> : ""
+
+            }
           </Form>
         </Modal.Body>
         <Modal.Footer>
