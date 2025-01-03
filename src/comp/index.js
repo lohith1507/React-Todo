@@ -13,7 +13,7 @@ import {
 import { GlobalContext } from "../App";
 
 export default function Index() {
-  const { todos, setTodos, fetchTodos, deleteTodo, addTodo , editTodo} =
+  const { todos, setTodos, fetchTodos, deleteTodo, addTodo, editTodo } =
     useContext(GlobalContext);
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState({
@@ -25,23 +25,23 @@ export default function Index() {
 
   const handleClose = () => setShow(false);
   const handleAdd = () => {
-    setEditId(null)
+    setEditId(null);
     setFormData({
       task: "",
       msg: "",
-      status: "Not Started"
+      status: "Not Started",
     });
     setShow(true);
   };
   const handleEdit = (item) => {
-      setFormData(item);
-      setEditId(item.id)
-      setShow(true);
+    setFormData(item);
+    setEditId(item.id);
+    setShow(true);
   };
 
   useEffect(() => {
     fetchTodos();
-  },[]);
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -49,24 +49,23 @@ export default function Index() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-      if(!editId){
-        const newTask = {
-          id: todos.length > 0 ? todos[todos.length - 1].id + 1 : 1,
-          ...formData,
-        };
-        try {
-          const res = await addTodo(newTask);
-          if (res.ok) {
-            console.log(newTask);
-          }
-        } catch (err) {
-          console.log("Failed to Save new Task: ", err);
+    if (!editId) {
+      const newTask = {
+        id: todos.length > 0 ? todos[todos.length - 1].id + 1 : 1,
+        ...formData,
+      };
+      try {
+        const res = await addTodo(newTask);
+        if (res.ok) {
+          console.log(newTask);
         }
+      } catch (err) {
+        console.log("Failed to Save new Task: ", err);
       }
-    else {
+    } else {
       try {
         const res = await editTodo(editId, formData);
-        if (res.ok){     
+        if (res.ok) {
           alert("Task Updated!");
         }
       } catch (err) {
@@ -87,6 +86,19 @@ export default function Index() {
       alert(`Failed to delete Todo with id - ${id}`);
     }
     fetchTodos();
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Not Started":
+        return "text-danger";
+      case "pending":
+        return "text-warning";
+      case "completed":
+        return "text-success";
+      default:
+        return "black";
+    }
   };
 
   return (
@@ -120,7 +132,7 @@ export default function Index() {
                     <td>{item.id}</td>
                     <td>{item.task}</td>
                     <td>{item.msg}</td>
-                    <td>{item.status}</td>
+                    <td className={getStatusColor(item.status)} style={{fontWeight:"bold"}}>{item.status}</td>
                     <td>
                       <Button
                         onClick={() => handleEdit(item)}
@@ -172,17 +184,22 @@ export default function Index() {
               />
             </Form.Group>
 
-            {
-              editId ? <Form.Group className="mb-3">
-              <Form.Label>Status</Form.Label>
-              <Form.Select onChange={handleChange} value={formData.status} name="status">
-                <option value="not started">Not Started</option>
-                <option value="pending">Pending</option>
-                <option value="completed">Completed</option>
-              </Form.Select>
-            </Form.Group> : ""
-
-            }
+            {editId ? (
+              <Form.Group className="mb-3">
+                <Form.Label>Status</Form.Label>
+                <Form.Select
+                  onChange={handleChange}
+                  value={formData.status}
+                  name="status"
+                >
+                  <option value="Not Started">Not Started</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Completed">Completed</option>
+                </Form.Select>
+              </Form.Group>
+            ) : (
+              ""
+            )}
           </Form>
         </Modal.Body>
         <Modal.Footer>
