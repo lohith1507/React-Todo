@@ -26,6 +26,11 @@ export default function Index() {
   const handleClose = () => setShow(false);
   const handleAdd = () => {
     setEditId(null)
+    setFormData({
+      task: "",
+      msg: "",
+      status: "Not Started"
+    });
     setShow(true);
   };
   const handleEdit = (item) => {
@@ -36,7 +41,7 @@ export default function Index() {
 
   useEffect(() => {
     fetchTodos();
-  }, [fetchTodos]);
+  },[]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -70,6 +75,7 @@ export default function Index() {
     }
     handleClose();
     setFormData({ task: "", msg: "", status: "Not Started" });
+    fetchTodos();
   };
 
   const handleDelete = async (id) => {
