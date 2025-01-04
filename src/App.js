@@ -26,9 +26,6 @@ function App() {
         },
         body: JSON.stringify(newItem),
       });
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
       return await res.json();
     } catch (err) {
       console.log("Error adding item:", err);

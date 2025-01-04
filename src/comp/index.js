@@ -65,9 +65,7 @@ export default function Index() {
     } else {
       try {
         const res = await editTodo(editId, formData);
-        if (res.ok) {
-          alert("Task Updated!");
-        }
+        alert("Task Updated!", res);
       } catch (err) {
         console.log("Failed to update Task: ", err);
       }
@@ -92,9 +90,9 @@ export default function Index() {
     switch (status) {
       case "Not Started":
         return "text-danger";
-      case "pending":
+      case "Pending":
         return "text-warning";
-      case "completed":
+      case "Completed":
         return "text-success";
       default:
         return "black";
