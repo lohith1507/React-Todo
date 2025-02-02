@@ -8,7 +8,7 @@ function App() {
   const [todos, setTodos] = useState([]);
 
   const fetchTodos = async () => {
-    const res = await fetch("http://localhost:5000/items");
+    const res = await fetch("https://your-json-api.onrender.com/items");
     if (!res.ok) {
       throw new Error("Data not Fetched");
     }
@@ -19,7 +19,7 @@ function App() {
 
   const addTodo = async (newItem) => {
     try {
-      const res = await fetch("http://localhost:5000/items", {
+      const res = await fetch("https://your-json-api.onrender.com/items", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,7 +34,7 @@ function App() {
 
   const editTodo = async(id, updatedItem) => {
     try{
-      const res = await fetch(`http://localhost:5000/items/${id}`,{
+      const res = await fetch(`https://your-json-api.onrender.com/${id}`,{
         method: 'PUT',
         headers:{
           'Content-Type' : 'application/json'
@@ -50,7 +50,7 @@ function App() {
 
   const deleteTodo = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/items/${id}`, {
+      const res = await fetch(`https://your-json-api.onrender.com/${id}`, {
         method: "DELETE",
       });
       if (!res.ok) {
