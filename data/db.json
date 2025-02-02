@@ -29,12 +29,6 @@
       "task": "Task5",
       "msg": "Task5 Message",
       "status": "Pending"
-    },
-    {
-      "id": 6,
-      "task": "Task6",
-      "msg": "Task6 Message",
-      "status": "Not Started"
     }
   ]
 }
