@@ -114,7 +114,9 @@ export default function Index() {
             </Button>
           </CardHeader>
           <CardBody>
-            <Table striped hover className="text-center">
+            {
+              todos.length > 0 ?
+              <Table striped hover className="text-center">
               <thead>
                 <tr>
                   <th>S.No</th>
@@ -150,6 +152,10 @@ export default function Index() {
                 ))}
               </tbody>
             </Table>
+            :
+            ""
+            }
+            
           </CardBody>
         </Card>
       </div>
